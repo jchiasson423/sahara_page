@@ -3,473 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparateur d'Expéditions à Merzouga</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Dune Harmony -->
-    <!-- Application Structure Plan: L'application est conçue comme un tableau de bord interactif à page unique pour aider l'utilisateur à choisir une expédition dans le désert. Plutôt qu'un long document, l'information est segmentée en trois vues accessibles par des onglets : 1) Un 'Comparateur d'Agences' interactif (vue par défaut) avec des cartes pour chaque tour, des filtres, et un graphique comparatif des prix. 2) Une vue 'Top 3 Recommandations' mettant en évidence les meilleurs choix. 3) Une vue 'Conseils de Voyage' avec des informations pratiques sous forme d'accordéon. Cette structure est choisie pour sa convivialité et son orientation vers la tâche principale de l'utilisateur : comparer et décider. Elle transforme la lecture passive en exploration active. -->
-    <!-- Visualization & Content Choices: 
-        - Rapport -> Objectif -> Visualisation/Présentation -> Interaction -> Justification
-        - Tableau comparatif -> Comparer efficacement -> Grille de cartes responsive (HTML/Tailwind) -> Boutons de tri (prix, note) -> Plus intuitif et adaptable aux mobiles qu'un tableau statique.
-        - Prix des tours -> Comparer les coûts -> Graphique à barres horizontales (Chart.js) -> Info-bulles au survol -> Visualisation immédiate des différences de prix, critère clé pour l'utilisateur.
-        - Services clés (tente, musique, nourriture) -> Informer rapidement -> Icônes Unicode par carte (⛺,🎶,🍽️) -> Aucun -> Permet une identification visuelle instantanée des prestations incluses.
-        - Recommandations -> Guider la décision -> Section dédiée avec des cartes mises en avant -> Aucun -> Focalise l'attention de l'utilisateur sur les options les plus pertinentes.
-        - Conseils pratiques -> Organiser l'information -> Accordéon (HTML/JS) -> Clic pour déplier/replier -> Garde la section propre et évite une longue liste, améliorant la lisibilité.
-        - CONFIRMATION: Aucun graphique SVG ou Mermaid JS n'est utilisé. Toutes les visualisations sont réalisées avec Chart.js (Canvas) ou des éléments HTML/CSS/Unicode. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>La Plus Belle Poutine du Monde</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FDFBF5; 
-            color: #4B3F36;
+            background: linear-gradient(135deg, #2c1810, #8B4513, #D2691E);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
         }
-        .active-tab {
-            border-bottom-color: #D97706; 
-            color: #D97706;
-            font-weight: 700;
-        }
-        .tab-btn {
-            border-bottom: 2px solid transparent;
-        }
-        .chart-container {
+
+        .container {
+            text-align: center;
+            padding: 20px;
             position: relative;
-            width: 100%;
-            max-width: 800px;
+        }
+
+        .title {
+            color: #FFD700;
+            font-size: 3em;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 3px 3px 6px rgba(0,0,0,0.5), 0 0 20px #FFD700; }
+            to { text-shadow: 3px 3px 6px rgba(0,0,0,0.5), 0 0 30px #FFD700, 0 0 40px #FFD700; }
+        }
+
+        .poutine-container {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+
+        .bowl {
+            width: 380px;
+            height: 280px;
+            background: linear-gradient(145deg, #8B4513, #A0522D);
+            border-radius: 50% 50% 40% 40%;
+            position: relative;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.3),
+                inset 0 5px 15px rgba(139, 69, 19, 0.3);
+            transform: rotateX(15deg);
+            animation: bowlFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes bowlFloat {
+            0%, 100% { transform: rotateX(15deg) translateY(0px); }
+            50% { transform: rotateX(15deg) translateY(-10px); }
+        }
+
+        .fries {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 40px;
+            overflow: hidden;
+            border-radius: 40% 40% 30% 30%;
+        }
+
+        .fry {
+            position: absolute;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF8C00);
+            border-radius: 3px;
+            animation: friesShimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes friesShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .fry:nth-child(1) { width: 40px; height: 8px; top: 30px; left: 40px; transform: rotate(15deg); }
+        .fry:nth-child(2) { width: 50px; height: 10px; top: 50px; left: 100px; transform: rotate(-20deg); }
+        .fry:nth-child(3) { width: 35px; height: 9px; top: 40px; left: 180px; transform: rotate(45deg); }
+        .fry:nth-child(4) { width: 45px; height: 8px; top: 70px; left: 60px; transform: rotate(-10deg); }
+        .fry:nth-child(5) { width: 55px; height: 11px; top: 80px; left: 150px; transform: rotate(30deg); }
+        .fry:nth-child(6) { width: 42px; height: 9px; top: 90px; left: 220px; transform: rotate(-25deg); }
+        .fry:nth-child(7) { width: 38px; height: 8px; top: 110px; left: 80px; transform: rotate(60deg); }
+        .fry:nth-child(8) { width: 48px; height: 10px; top: 120px; left: 170px; transform: rotate(-40deg); }
+
+        .cheese-curds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .curd {
+            position: absolute;
+            background: radial-gradient(circle, #FFFACD, #F5DEB3, #DEB887);
+            border-radius: 50%;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: curdBounce 3s ease-in-out infinite;
+        }
+
+        @keyframes curdBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .curd:nth-child(1) { width: 25px; height: 20px; top: 35px; left: 80px; animation-delay: 0s; }
+        .curd:nth-child(2) { width: 30px; height: 25px; top: 60px; left: 140px; animation-delay: 0.5s; }
+        .curd:nth-child(3) { width: 20px; height: 18px; top: 85px; left: 90px; animation-delay: 1s; }
+        .curd:nth-child(4) { width: 28px; height: 22px; top: 105px; left: 190px; animation-delay: 1.5s; }
+        .curd:nth-child(5) { width: 22px; height: 20px; top: 45px; left: 200px; animation-delay: 2s; }
+        .curd:nth-child(6) { width: 26px; height: 24px; top: 75px; left: 250px; animation-delay: 2.5s; }
+
+        .gravy {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 30px;
+            background: radial-gradient(ellipse at center, 
+                rgba(101, 67, 33, 0.8) 0%,
+                rgba(139, 69, 19, 0.6) 40%,
+                rgba(160, 82, 45, 0.4) 70%,
+                transparent 100%);
+            border-radius: 45% 45% 35% 35%;
+            animation: gravyFlow 4s ease-in-out infinite;
+        }
+
+        @keyframes gravyFlow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.6; }
+        }
+
+        .steam {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .steam-line {
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(to top, rgba(255,255,255,0.7), transparent);
+            margin: 0 8px;
+            border-radius: 2px;
+            animation: steamRise 2s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        .steam-line:nth-child(1) { animation-delay: 0s; }
+        .steam-line:nth-child(2) { animation-delay: 0.3s; }
+        .steam-line:nth-child(3) { animation-delay: 0.6s; }
+        .steam-line:nth-child(4) { animation-delay: 0.9s; }
+
+        @keyframes steamRise {
+            0% { opacity: 0; transform: translateY(20px) scaleY(0.5); }
+            50% { opacity: 1; transform: translateY(-10px) scaleY(1); }
+            100% { opacity: 0; transform: translateY(-40px) scaleY(0.3); }
+        }
+
+        .description {
+            color: #F5DEB3;
+            font-size: 1.2em;
+            margin-top: 40px;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
-            height: 400px;
-            max-height: 50vh;
         }
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 300px;
-                max-height: 60vh;
-            }
+
+        .sparkles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: sparkleShine 3s ease-in-out infinite;
+        }
+
+        @keyframes sparkleShine {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .sparkle:nth-child(1) { top: 20%; left: 15%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 30%; left: 85%; animation-delay: 0.8s; }
+        .sparkle:nth-child(3) { top: 70%; left: 20%; animation-delay: 1.6s; }
+        .sparkle:nth-child(4) { top: 80%; left: 80%; animation-delay: 2.4s; }
+        .sparkle:nth-child(5) { top: 40%; left: 50%; animation-delay: 3.2s; }
+
+        .canadian-flag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2em;
+            animation: flagWave 2s ease-in-out infinite;
+        }
+
+        @keyframes flagWave {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
         }
     </style>
 </head>
-<body class="antialiased">
-
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<body>
+    <div class="container">
+        <div class="canadian-flag">🇨🇦</div>
+        <h1 class="title">La Plus Belle Poutine du Monde</h1>
         
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-amber-900">Votre Aventure Saharienne à Merzouga</h1>
-            <p class="mt-4 text-lg text-stone-700 max-w-3xl mx-auto">Un outil interactif pour choisir votre expédition de 3 jours au départ de Marrakech, selon vos envies d'authenticité et votre budget.</p>
-        </header>
-
-        <div class="bg-amber-50 rounded-xl p-6 mb-12 border border-amber-200">
-             <h2 class="text-2xl font-bold text-amber-800 mb-3 text-center">Résumé de votre recherche</h2>
-             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 text-center">
-                <div class="bg-white p-3 rounded-lg shadow-sm">
-                    <span class="text-2xl">📅</span>
-                    <p class="font-semibold mt-1">3 Jours / 2 Nuits</p>
+        <div class="poutine-container">
+            <div class="sparkles">
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+            </div>
+            
+            <div class="bowl">
+                <div class="fries">
+                    <div class="fry"></div>
+                    <div class="fry"></div>
+                    <div class="fry"></div>
+                    <div class="fry"></div>
+                    <div class="fry"></div>
+                    <div class="fry"></div>
+                    <div class="fry"></div>
+                    <div class="fry"></div>
                 </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm">
-                    <span class="text-2xl">⛺</span>
-                    <p class="font-semibold mt-1">Nuit en Bivouac</p>
+                
+                <div class="cheese-curds">
+                    <div class="curd"></div>
+                    <div class="curd"></div>
+                    <div class="curd"></div>
+                    <div class="curd"></div>
+                    <div class="curd"></div>
+                    <div class="curd"></div>
                 </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm">
-                    <span class="text-2xl">🎶</span>
-                    <p class="font-semibold mt-1">Musique Berbère</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm">
-                    <span class="text-2xl">🍽️</span>
-                    <p class="font-semibold mt-1">Repas Typiques</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow-sm col-span-2 lg:col-span-1">
-                    <span class="text-2xl">💸</span>
-                    <p class="font-semibold mt-1">Budget Modéré</p>
-                </div>
+                
+                <div class="gravy"></div>
+            </div>
+            
+            <div class="steam">
+                <div class="steam-line"></div>
+                <div class="steam-line"></div>
+                <div class="steam-line"></div>
+                <div class="steam-line"></div>
             </div>
         </div>
-
-        <main>
-            <div class="border-b border-gray-200 mb-8">
-                <nav class="-mb-px flex justify-center space-x-4 md:space-x-8" aria-label="Tabs">
-                    <button id="tab-comparator" class="tab-btn whitespace-nowrap py-4 px-1 text-base font-medium active-tab">Comparateur d'Agences</button>
-                    <button id="tab-recommendations" class="tab-btn whitespace-nowrap py-4 px-1 text-base font-medium">Top 3 Recommandations</button>
-                    <button id="tab-tips" class="tab-btn whitespace-nowrap py-4 px-1 text-base font-medium">Conseils de Voyage</button>
-                </nav>
-            </div>
-
-            <div id="view-comparator">
-                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-amber-900">Comparez les Expéditions</h2>
-                    <p class="mt-2 text-stone-600 max-w-2xl mx-auto">Utilisez le graphique et les filtres ci-dessous pour trouver le circuit qui vous convient. Toutes les options incluent une nuit en tente, une balade à chameau et le transport depuis Marrakech.</p>
-                </div>
-                
-                <div class="mb-12">
-                    <div class="chart-container">
-                        <canvas id="priceChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap justify-center gap-2 mb-8">
-                    <span class="self-center mr-2 font-semibold">Trier par:</span>
-                    <button id="sort-price-asc" class="bg-white hover:bg-amber-100 text-amber-800 font-semibold py-2 px-4 border border-amber-200 rounded-lg shadow-sm">Prix (croissant)</button>
-                    <button id="sort-price-desc" class="bg-white hover:bg-amber-100 text-amber-800 font-semibold py-2 px-4 border border-amber-200 rounded-lg shadow-sm">Prix (décroissant)</button>
-                    <button id="sort-rating-desc" class="bg-white hover:bg-amber-100 text-amber-800 font-semibold py-2 px-4 border border-amber-200 rounded-lg shadow-sm">Note (élevée)</button>
-                </div>
-                
-                <div id="tours-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                </div>
-            </div>
-
-            <div id="view-recommendations" class="hidden">
-                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-amber-900">Nos 3 Meilleures Recommandations</h2>
-                    <p class="mt-2 text-stone-600 max-w-2xl mx-auto">Basé sur une analyse complète de vos critères, voici les trois options qui se distinguent par leur rapport qualité/prix, les avis des voyageurs et la richesse de l'expérience.</p>
-                </div>
-                <div id="recommendations-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-                </div>
-            </div>
-
-            <div id="view-tips" class="hidden">
-                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-amber-900">Conseils pour une Aventure Réussie</h2>
-                    <p class="mt-2 text-stone-600 max-w-2xl mx-auto">Quelques informations pratiques pour vous préparer au mieux à votre immersion dans le Sahara.</p>
-                </div>
-                <div id="tips-accordion" class="max-w-3xl mx-auto space-y-4">
-                </div>
-            </div>
-
-        </main>
+        
+        <div class="description">
+            <strong>Une poutine légendaire :</strong><br>
+            Frites dorées et croustillantes, fromage en grains qui fait "couic-couic", 
+            sauce brune onctueuse qui lie le tout dans une harmonie parfaite. 
+            Servie fumante dans un bol artisanal, cette poutine incarne 
+            l'âme du Québec et la passion culinaire canadienne.
+            <br><br>
+            <em>Tabarnak, c'est bon ! 🍁</em>
+        </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toursData = [
-                {
-                    id: 1,
-                    title: "Excursion Dunes de Merzouga (Groupe)",
-                    agency: "Traces Berbères Nature & Aventure",
-                    price: 132,
-                    rating: 4.8,
-                    reviewsCount: 'Nombreux',
-                    link: "https://excursionmarrakech-maroc.com/detail/4/excursion-dunes-de-merzouga-et-vallee-de-dades/5",
-                    cancellable: true,
-                    booking: "En ligne",
-                    music: true,
-                    food: true,
-                    summary: "Un tarif de groupe très attractif avec une excellente réputation des guides. Offre une politique d'annulation flexible et un contact direct avec une agence locale expérimentée.",
-                    isRecommendation: 1
-                },
-                {
-                    id: 2,
-                    title: "Merzouga 3-Day Desert Safari with Food",
-                    agency: "via GetYourGuide",
-                    price: 151,
-                    rating: 4.6,
-                    reviewsCount: '8900+',
-                    link: "https://www.getyourguide.com",
-                    cancellable: true,
-                    booking: "En ligne",
-                    music: true,
-                    food: true,
-                    summary: "Extrêmement populaire avec des milliers d'avis positifs. La musique berbère est explicitement mentionnée (tambours Tam Tam). Réservation facile et fiable via une plateforme reconnue.",
-                    isRecommendation: 2
-                },
-                {
-                    id: 3,
-                    title: "Merzouga Desert Tour 3 Days",
-                    agency: "Desert Tour Morocco (via GetYourGuide)",
-                    price: 145,
-                    rating: 4.5,
-                    reviewsCount: '26+',
-                    link: "https://www.getyourguide.com",
-                    cancellable: true,
-                    booking: "En ligne",
-                    music: true,
-                    food: true,
-                    summary: "L'une des options les plus abordables. Inclut explicitement la musique, une tente privée au camp et même du sandboarding pour une touche d'aventure supplémentaire.",
-                    isRecommendation: 3
-                },
-                {
-                    id: 4,
-                    title: "Circuit en groupe de 3 jours",
-                    agency: "Marrakech Desert Trips",
-                    price: 140,
-                    rating: 4.4,
-                    reviewsCount: '1200+',
-                    link: "https://www.marrakech-desert-trips.com/fr/",
-                    cancellable: false,
-                    booking: "Contact direct",
-                    music: true,
-                    food: true,
-                    summary: "Agence locale spécialisée, nécessite un contact direct pour confirmer les détails et la politique d'annulation. Bon point de départ pour une offre personnalisée.",
-                    isRecommendation: 0
-                },
-                {
-                    id: 5,
-                    title: "3 Days Tour to Merzouga with Luxury Camp",
-                    agency: "Desert Family Tour (via GetYourGuide)",
-                    price: 186,
-                    rating: 4.5,
-                    reviewsCount: '4+',
-                    link: "https://www.getyourguide.com",
-                    cancellable: true,
-                    booking: "En ligne",
-                    music: true,
-                    food: true,
-                    summary: "Option légèrement plus chère avec un camp 'de luxe'. Idéal si vous souhaitez un peu plus de confort tout en gardant l'expérience authentique.",
-                    isRecommendation: 0
-                },
-                {
-                    id: 6,
-                    title: "Sahara Desert Merzouga Low Cost Tour",
-                    agency: "via Viator",
-                    price: 192,
-                    rating: 4.3,
-                    reviewsCount: '3+',
-                    link: "https://www.viator.com",
-                    cancellable: true,
-                    booking: "En ligne",
-                    music: true,
-                    food: true,
-                    summary: "Option 'Low Cost' sur Viator, le prix de base semble plus élevé mais peut inclure d'autres services. À vérifier sur la plateforme.",
-                    isRecommendation: 0
-                },
-                {
-                    id: 7,
-                    title: "3 Days Desert Tour & Camel Trek",
-                    agency: "Hdida Tours (via Viator)",
-                    price: 159,
-                    rating: 4.8,
-                    reviewsCount: '6+',
-                    link: "https://www.viator.com",
-                    cancellable: true,
-                    booking: "En ligne",
-                    music: true,
-                    food: true,
-                    summary: "Excellents avis sur le service de l'opérateur local Hdida Tours. Une option fiable et très bien notée sur Viator.",
-                    isRecommendation: 0
-                }
-            ];
-
-            const tipsData = [
-                {
-                    title: "Quoi Emporter ?",
-                    content: "Prévoyez des vêtements pour des températures extrêmes : chaud le jour, froid la nuit. N'oubliez pas crème solaire, chapeau, lunettes de soleil, et une écharpe (chèche). Des chaussures de marche confortables et une batterie externe sont aussi recommandées."
-                },
-                {
-                    title: "Hydratation et Santé",
-                    content: "Buvez beaucoup d'eau pour éviter la déshydratation. Une petite trousse de premiers secours avec les essentiels (pansements, désinfectant, etc.) est toujours une bonne idée."
-                },
-                {
-                    title: "Pourboires et Argent",
-                    content: "Il est d'usage au Maroc de laisser un pourboire aux guides, chauffeurs et personnel de camp si vous êtes satisfait du service. Prévoyez un peu d'argent liquide pour cela et pour les dépenses personnelles comme les boissons ou les déjeuners."
-                },
-                {
-                    title: "Respect Culturel et Photographie",
-                    content: "Adoptez une attitude respectueuse envers les coutumes locales. Demandez toujours la permission avant de prendre des personnes en photo. Un simple sourire et un geste sont souvent suffisants."
-                },
-                {
-                    title: "Déconnexion Numérique",
-                    content: "La couverture réseau est très limitée, voire inexistante, au cœur du désert. C'est l'occasion parfaite de vous déconnecter et de vous immerger pleinement dans l'instant présent."
-                }
-            ];
-
-            const toursGrid = document.getElementById('tours-grid');
-            const recommendationsGrid = document.getElementById('recommendations-grid');
-            const tipsAccordion = document.getElementById('tips-accordion');
-
-            const renderStars = (rating) => {
-                const fullStars = Math.floor(rating);
-                const halfStar = rating % 1 >= 0.5 ? 1 : 0;
-                const emptyStars = 5 - fullStars - halfStar;
-                return '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
-            };
-
-            const renderTours = (tours, container, isRecommendation) => {
-                container.innerHTML = '';
-                tours.forEach(tour => {
-                    const card = document.createElement('div');
-                    card.className = `bg-white rounded-xl shadow-md overflow-hidden flex flex-col transition-transform transform hover:-translate-y-1 border ${isRecommendation ? 'border-amber-400' : 'border-gray-200'}`;
-                    
-                    let recommendationBadge = '';
-                    if (isRecommendation) {
-                        recommendationBadge = `<div class="absolute top-0 left-0 bg-amber-600 text-white font-bold py-1 px-3 rounded-br-lg z-10">Recommandation #${tour.isRecommendation}</div>`;
-                    }
-
-                    card.innerHTML = `
-                        <div class="relative">
-                            ${recommendationBadge}
-                            <div class="p-6">
-                                <div class="uppercase tracking-wide text-sm text-amber-600 font-bold">${tour.agency}</div>
-                                <h3 class="block mt-1 text-xl leading-tight font-bold text-black">${tour.title}</h3>
-                                <div class="mt-4 flex justify-between items-center">
-                                    <p class="text-3xl font-bold text-amber-800">${tour.price}<span class="text-base font-normal"> CAD</span></p>
-                                    <div class="text-right">
-                                        <div class="text-lg text-amber-500">${renderStars(tour.rating)}</div>
-                                        <p class="text-sm text-gray-600">${tour.rating.toFixed(1)}/5 (${tour.reviewsCount} avis)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-6 pt-0 mt-auto">
-                            ${isRecommendation ? `<p class="text-stone-600 mb-4">${tour.summary}</p>` : ''}
-                            <div class="grid grid-cols-2 gap-3 text-sm text-stone-700 mb-4">
-                                <span class="flex items-center">
-                                    <span class="text-green-600 mr-2">✔️</span> Rés. ${tour.booking}
-                                </span>
-                                <span class="flex items-center">
-                                    <span class="${tour.cancellable ? 'text-green-600' : 'text-red-500'} mr-2">${tour.cancellable ? '✔️' : '❌'}</span> Annulation gratuite
-                                </span>
-                                 <span class="flex items-center">
-                                    <span class="text-xl mr-2">🎶</span> Musique berbère
-                                </span>
-                                 <span class="flex items-center">
-                                    <span class="text-xl mr-2">🍽️</span> Repas typiques
-                                </span>
-                            </div>
-                            <a href="${tour.link}" target="_blank" class="block w-full text-center bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
-                                Vérifier & Réserver
-                            </a>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            };
-
-            const renderTips = () => {
-                tipsData.forEach(tip => {
-                    const tipDiv = document.createElement('div');
-                    tipDiv.className = 'border border-gray-200 rounded-lg bg-white';
-                    tipDiv.innerHTML = `
-                        <button class="accordion-button w-full flex justify-between items-center text-left p-4 font-semibold text-stone-800">
-                            <span>${tip.title}</span>
-                            <span class="transform transition-transform duration-300">▼</span>
-                        </button>
-                        <div class="accordion-content px-4 pb-4 text-stone-600">
-                            <p>${tip.content}</p>
-                        </div>
-                    `;
-                    tipsAccordion.appendChild(tipDiv);
-                });
-
-                document.querySelectorAll('.accordion-button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const content = button.nextElementSibling;
-                        const arrow = button.querySelector('span:last-child');
-                        if (content.style.maxHeight) {
-                            content.style.maxHeight = null;
-                            arrow.style.transform = 'rotate(0deg)';
-                        } else {
-                            document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
-                            document.querySelectorAll('.accordion-button span:last-child').forEach(a => a.style.transform = 'rotate(0deg)');
-                            content.style.maxHeight = content.scrollHeight + "px";
-                            arrow.style.transform = 'rotate(180deg)';
-                        }
-                    });
-                });
-            };
-            
-            const sortTours = (criteria) => {
-                let sortedTours = [...toursData];
-                switch(criteria) {
-                    case 'price-asc':
-                        sortedTours.sort((a, b) => a.price - b.price);
-                        break;
-                    case 'price-desc':
-                        sortedTours.sort((a, b) => b.price - a.price);
-                        break;
-                    case 'rating-desc':
-                        sortedTours.sort((a, b) => b.rating - a.rating);
-                        break;
-                }
-                renderTours(sortedTours, toursGrid, false);
-            };
-
-            document.getElementById('sort-price-asc').addEventListener('click', () => sortTours('price-asc'));
-            document.getElementById('sort-price-desc').addEventListener('click', () => sortTours('price-desc'));
-            document.getElementById('sort-rating-desc').addEventListener('click', () => sortTours('rating-desc'));
-
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            const views = {
-                'tab-comparator': document.getElementById('view-comparator'),
-                'tab-recommendations': document.getElementById('view-recommendations'),
-                'tab-tips': document.getElementById('view-tips')
-            };
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active-tab'));
-                    button.classList.add('active-tab');
-
-                    Object.values(views).forEach(view => view.classList.add('hidden'));
-                    views[button.id].classList.remove('hidden');
-                });
-            });
-
-            const createChart = () => {
-                const ctx = document.getElementById('priceChart').getContext('2d');
-                const sortedData = [...toursData].sort((a, b) => a.price - b.price);
-
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: sortedData.map(t => t.title.length > 30 ? t.title.substring(0, 30) + '...' : t.title),
-                        datasets: [{
-                            label: 'Prix par personne (CAD)',
-                            data: sortedData.map(t => t.price),
-                            backgroundColor: 'rgba(217, 119, 6, 0.7)',
-                            borderColor: 'rgba(217, 119, 6, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    title: (context) => {
-                                        const index = context[0].dataIndex;
-                                        return sortedData[index].title;
-                                    },
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.x !== null) {
-                                            label += new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(context.parsed.x);
-                                        }
-                                        return label;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Prix (CAD)'
-                                }
-                            }
-                        }
-                    }
-                });
-            };
-
-            sortTours('price-asc');
-            renderTours(toursData.filter(t => t.isRecommendation > 0).sort((a,b) => a.isRecommendation - b.isRecommendation), recommendationsGrid, true);
-            renderTips();
-            createChart();
-        });
-    </script>
 </body>
 </html>
